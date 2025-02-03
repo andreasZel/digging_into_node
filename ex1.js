@@ -32,6 +32,7 @@ function printHelp() {
     console.log("ex1 usage:");
     console.log("");
     console.log("--help                      print this help");
+    console.log("--file={FILENAME}           process the file");
 }
 
 

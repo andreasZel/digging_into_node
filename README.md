@@ -69,3 +69,33 @@ var args = require("minimist")(process.argv.slice(2), {
 ```
 
 this will always treats `help` as `boolean`
+
+# path.resolve
+
+1. if we provide a relative path, it uses `__dirname` to find the dir
+   of the file and adds the file provided
+
+   `path.resolve(file)` will give `/Users/../../file`
+
+2. if we provide an absolute path, it will use that
+
+   `path.resolve(src/file)` will give `src/file`
+
+# fs
+
+we can use `fs` to wait and read a file with `fs.readFileSync(filepath)`
+the output will be a binary buffer
+
+to view the file we can:
+
+```Javascript
+    var contents = fs.readFileSync(filepath);
+    process.stdout.write(contents);
+```
+
+or just say the encoding as a second parameter
+
+```Javascript
+    var contents = fs.readFileSync(filepath, 'utf-8');
+    console.log(contents);
+```

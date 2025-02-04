@@ -2,7 +2,7 @@
 
 "use strict";
 
-var utils = require('utils');
+var util = require('util');
 var path = require('path');
 var fs = require('fs');
 var getStdin = require('get-stdin');

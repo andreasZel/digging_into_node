@@ -5,6 +5,7 @@
 var utils = require('utils');
 var path = require('path');
 var fs = require('fs');
+var Transform = require('stream').Transform;
 
 var args = require("minimist")(process.argv.slice(2), {
     boolean: ["help", "in"],
@@ -42,6 +43,16 @@ if (args.help) {
 function processFile(inStream) {
 
     var outStream = inStream;
+
+    // inbetween stream that makes chunks into upperCase 
+    var uppserStream = new Transform({
+        transform(chunck, enc, next) {
+            this.push(chunck.toString().toUpperCase());
+            next();
+        }
+    })
+
+    outStream = outStream.pipe(uppserStream);
 
     var tagetStream = process.stdout; // writable stream
     outStream.pipe(tagetStream);

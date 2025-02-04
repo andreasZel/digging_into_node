@@ -136,3 +136,55 @@ Because stdin is more tedious than stdout, we can use a package to collect the i
 
 We can pass env variables to our node script with `VARIABLE=VALUE ./test.js` and
 then access the value with `process.env.VARIABLE`
+
+# Node streams
+
+1. simple stream
+   can either read or write
+   1.1. readable stream
+   1.2. writable stream
+
+2. duplex stream
+   can read and write
+
+## Connecting streams
+
+If we have a readable and a writable stream and we want to pass the info
+from the readable to writable we use `pipe()`:
+
+```Javascript
+  var readable_stream;
+  var writable_stream;
+
+  const stream3 = readable_stream.pipe(writable_stream)
+```
+
+it's like connecting a water hose to a faucet, only availabe to readable streams
+
+what is return is a `stream!`, so we can chain streams
+
+```Javascript
+  const stream5; // writable stream
+  const stream3 = readable_stream.pipe(readable_stream) // stream3 is readable, so we can pipe it
+  const stream6 = stream3.pipe(stream5)
+
+  // equivalent to
+
+  const stream6 = readable_stream
+                  .pipe(readable_stream)
+                  .pipe(stream5)
+```
+
+So in the same way we outputed content from out input stream as text we can output them as streams
+
+```Javascript
+var inputStream = process.stdin; // readable stream
+var outputStream = process.stdout; // writable stream
+
+const resultStream = inputStream.pipe(outputStream);
+
+// logs the content of input stream
+```
+
+The advantage of this method is that we do not convert the whole file or input into a Buffer
+and then convert it to String, but we read it in chunks, not all data in memory

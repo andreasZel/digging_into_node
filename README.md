@@ -188,3 +188,23 @@ const resultStream = inputStream.pipe(outputStream);
 
 The advantage of this method is that we do not convert the whole file or input into a Buffer
 and then convert it to String, but we read it in chunks, not all data in memory
+
+### Inbetween streams with Transform
+
+We can add an inbetween step to each chunck recieved from inputstream with `Transform`.
+We create inbetween stream with:
+
+```Javascript
+var uppserStream = new Transform({
+        transform(chunck, enc, next) {
+            // do stuff with chuncks
+            next(); // return function when it finishes
+        }
+    })
+```
+
+the Transform takes by default a `transform` function with
+
+1. `chunck`: the current chunk
+2. `enc`: encoding used
+3. `next`: function to indicate finish of processing

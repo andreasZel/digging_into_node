@@ -2,13 +2,14 @@
 
 "use strict";
 
-var utils = require('utils');
+var util = require('util');
 var path = require('path');
 var fs = require('fs');
 var Transform = require('stream').Transform;
+var zlib = require("zlib");
 
 var args = require("minimist")(process.argv.slice(2), {
-    boolean: ["help", "in", "out"],
+    boolean: ["help", "in", "out", "compress"],
     string: ["file"]
 });
 
@@ -56,6 +57,12 @@ function processFile(inStream) {
 
     outStream = outStream.pipe(uppserStream);
 
+    if (args.compress) {
+        let gzipStream = zlib.createGzip()
+        outStream = outStream.pipe(gzipStream)
+        OUTFILE = `${OUTFILE}.gz`
+    }
+
     var tagetStream;
     if (args.out) {
         tagetStream = process.stdout; // writable stream
@@ -80,7 +87,8 @@ function printHelp() {
     console.log("--help                      print this help");
     console.log("--file={FILENAME}           process the file");
     console.log("--in, -                     process stdin");
-    console.log("--out                       print tp stdout");
+    console.log("--out                       print to stdout");
+    console.log("--compress                  gzip the output");
     console.log("");
 }
 

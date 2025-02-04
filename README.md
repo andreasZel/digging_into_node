@@ -70,7 +70,9 @@ var args = require("minimist")(process.argv.slice(2), {
 
 this will always treats `help` as `boolean`
 
-# path.resolve
+# path
+
+## path.resolve
 
 1. if we provide a relative path, it uses `__dirname` to find the dir
    of the file and adds the file provided
@@ -80,6 +82,11 @@ this will always treats `help` as `boolean`
 2. if we provide an absolute path, it will use that
 
    `path.resolve(src/file)` will give `src/file`
+
+## path.join
+
+will take any number of input and use the correct seperator according
+to our OS
 
 # fs
 
@@ -99,3 +106,33 @@ or just say the encoding as a second parameter
     var contents = fs.readFileSync(filepath, 'utf-8');
     console.log(contents);
 ```
+
+fs methods have a optional err parameter, if we read the file async
+we pass a callback that takes an error and the contents of the file when ended
+
+```Javascript
+
+fs.readFile(filepath, function onContents(error, contents) {
+        if (err) {
+            error(err.toString());
+        } else {
+
+            process.stdout.write(contents);
+        }
+    });
+
+```
+
+# Stdin
+
+Because stdin is more tedious than stdout, we can use a package to collect the input stream
+`get-stdin` we can pass arguments in the stdin to our node script with:
+
+```bash
+ cat file.txt | ./test.js
+```
+
+# Environmental variables
+
+We can pass env variables to our node script with `VARIABLE=VALUE ./test.js` and
+then access the value with `process.env.VARIABLE`

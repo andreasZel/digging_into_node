@@ -23,8 +23,14 @@ if (args.help) {
 // ************************
 
 function processFile(filepath) {
-    var contents = fs.readFileSync(filepath);
-    process.stdout.write(contents);
+    fs.readFile(filepath, function onContents(error, contents) {
+        if (err) {
+            error(err.toString());
+        } else {
+
+            process.stdout.write(contents);
+        }
+    });
 }
 
 function error(msg, includeHelp = false) {

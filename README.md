@@ -215,3 +215,13 @@ the Transform takes by default a `transform` function with
 1. `chunck`: the current chunk
 2. `enc`: encoding used
 3. `next`: function to indicate finish of processing
+
+# Compressing and decompressing
+
+we can use the built in `zlib`. We create a zlib stream and
+just pipe the readable stream into it:
+
+```Javascript
+    et gzipStream = zlib.createGzip()
+    outStream = outStream.pipe(gzipStream)
+```

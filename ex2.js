@@ -8,13 +8,15 @@ var fs = require('fs');
 var Transform = require('stream').Transform;
 
 var args = require("minimist")(process.argv.slice(2), {
-    boolean: ["help", "in"],
+    boolean: ["help", "in", "out"],
     string: ["file"]
 });
 
 var BASE_PATH = path.resolve(
     process.env.BASE_PATH || __dirname
 )
+
+var OUTFILE = path.join(BASE_PATH, 'out.txt');
 
 if (args.help) {
     printHelp();
@@ -54,7 +56,13 @@ function processFile(inStream) {
 
     outStream = outStream.pipe(uppserStream);
 
-    var tagetStream = process.stdout; // writable stream
+    var tagetStream;
+    if (args.out) {
+        tagetStream = process.stdout; // writable stream
+    } else {
+        tagetStream = fs.createWriteStream(OUTFILE);
+    }
+
     outStream.pipe(tagetStream);
 }
 
@@ -67,11 +75,12 @@ function error(msg, includeHelp = false) {
 }
 
 function printHelp() {
-    console.log("ex1 usage:");
+    console.log("ex2 usage:");
     console.log("");
     console.log("--help                      print this help");
     console.log("--file={FILENAME}           process the file");
     console.log("--in, -                     process stdin");
+    console.log("--out                       print tp stdout");
     console.log("");
 }
 

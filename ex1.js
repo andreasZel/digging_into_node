@@ -2,19 +2,33 @@
 
 "use strict";
 
+var utils = require('utils');
 var path = require('path');
 var fs = require('fs');
+var getStdin = require('get-stdin');
+
 var args = require("minimist")(process.argv.slice(2), {
-    boolean: [help],
-    string: [file]
+    boolean: ["help", "in"],
+    string: ["file"]
 });
 
-if (args.help) {
+var BASE_PATH = path.resolve(
+    process.env.BASE_PATH || __dirname
+)
 
+if (args.help) {
     printHelp();
+} else if (args.in || args._.includes("-")) {
+    getStdin().then(processFile).catch(error);
 } else if (args.file) {
-    let filepath = path.resolve(args.file);
-    processFile(filepath);
+    fs.readFile(path.join(BASE_PATH, args.file), function onContents(error, contents) {
+        if (err) {
+            error(err.toString());
+        } else {
+            processFile(contents.toString());
+        }
+    });
+
 } else {
 
     error('Incorrect usage.', true);
@@ -22,15 +36,9 @@ if (args.help) {
 
 // ************************
 
-function processFile(filepath) {
-    fs.readFile(filepath, function onContents(error, contents) {
-        if (err) {
-            error(err.toString());
-        } else {
-
-            process.stdout.write(contents);
-        }
-    });
+function processFile(contents) {
+    contents = contents.toUpperCase();
+    process.stdout.write(contents);
 }
 
 function error(msg, includeHelp = false) {
@@ -46,6 +54,8 @@ function printHelp() {
     console.log("");
     console.log("--help                      print this help");
     console.log("--file={FILENAME}           process the file");
+    console.log("--in, -                     process stdin");
+    console.log("");
 }
 
 

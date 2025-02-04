@@ -189,6 +189,13 @@ const resultStream = inputStream.pipe(outputStream);
 The advantage of this method is that we do not convert the whole file or input into a Buffer
 and then convert it to String, but we read it in chunks, not all data in memory
 
+## Creating streams
+
+we create streams using `fs` with
+
+1. `fs.createReadStream(path)` : for readable
+2. `fs.createWriteStream(path)` " for writable
+
 ### Inbetween streams with Transform
 
 We can add an inbetween step to each chunck recieved from inputstream with `Transform`.

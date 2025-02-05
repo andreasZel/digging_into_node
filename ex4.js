@@ -60,10 +60,18 @@ async function main() {
     if (otherID) {
         let result = await insertSomething(otherID, something)
 
+        if (result) {
+            var records = await getAllRecords();
+            if (records && records.length > 0) {
+                console.table(records);
+                return;
+            }
+        } else {
+            error("Oops!");
+        }
         return;
-    } else {
-        error("Oops!");
     }
+
 }
 
 async function incertOrLookupOther(other) {
@@ -72,10 +80,28 @@ async function incertOrLookupOther(other) {
     if (result && result.id) {
         return result;
     } else {
-        result = await SQL3.run(`INSERT INTO other (data) VALUES(?)`, other);
+        result = await SQL3.run(`INSERT INTO Other (data) VALUES(?)`, other);
         if (result && result.lastID) {
             return result.lastID;
         }
+    }
+}
+
+async function insertSomething(otherID, something) {
+    result = await SQL3.run(`INSERT INTO Other (otherID, data) VALUES(?, ?)`, otherID, something);
+
+    if (result && result.changes > 0) {
+        return true;
+    }
+
+    return false;
+}
+
+async function getAllRecords() {
+    var result = await SQL3.all(`SELECT Other.data AS 'other', Something.data AS 'something' FROM Something join Other ON Something.otherID = Other.id ORDER BY Other.id DESC, Something.data ASC`)
+
+    if (result && result.length > 0) {
+        return result
     }
 }
 

@@ -7,12 +7,14 @@ var path = require('path');
 var fs = require('fs');
 var Transform = require('stream').Transform;
 var zlib = require("zlib");
+var CAF = require('caf');
 
 var args = require("minimist")(process.argv.slice(2), {
     boolean: ["help", "in", "out", "compress", "uncompress"],
     string: ["file"]
 });
 
+processFile = CAF(processFile);
 
 function streamComplete() {
     return new Promise(function c(res) {
@@ -31,7 +33,9 @@ if (args.help) {
     printHelp();
 } else if (args.in || args._.includes("-")) {
 
-    processFile(process.stdin)
+    let tooLong = CAF.timeout(20, 'Took too long'); // cancellation token that cancels after 3sec
+
+    processFile(tooLong, process.stdin)
         .then(function () {
             console.log('Complete!')
         }).catch(error); // pass stdin stream (readable stream)
@@ -39,11 +43,13 @@ if (args.help) {
 
     let stream = fs.createReadStream(path.join(BASE_PATH, args.file)); // make a stream that reads the file
 
+    let tooLong = CAF.timeout(20, 'Took too long'); // cancellation token that cancels after 3sec
+
     fs.readFile(stream, function onContents(error, contents) {
         if (err) {
             error(err.toString());
         } else {
-            processFile(contents.toString())
+            processFile(tooLong, contents.toString())
                 .then(function () {
 
                 })
@@ -58,7 +64,7 @@ if (args.help) {
 
 // ************************
 
-async function processFile(inStream) {
+function* processFile(signal, inStream) {
 
     var outStream = inStream;
 
@@ -92,7 +98,12 @@ async function processFile(inStream) {
 
     outStream.pipe(tagetStream);
 
-    await streamComplete(outStream);
+    signal.pr.catch(function f() {
+        outStream.unpipe(tagetStream);
+        outStream.destroy();
+    });
+
+    yield streamComplete(outStream);
 }
 
 function error(msg, includeHelp = false) {

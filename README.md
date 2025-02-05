@@ -262,3 +262,31 @@ const stream = stream.pipe(tagetStream)
 
 await streamComplete(stream);
 ```
+
+## Cancel a stream process with Cancellation Token
+
+we stop the processing of a stream using:
+
+1. `readableStream.unpipe(writableStream)` : stops the piping of the stream
+2. `readableStream.destroy()` : chains an event that stops the processing of the streams and any
+   streams attached to it
+
+We could cancel a stream process after a time has passed with `CAF` a npm package.
+This package takes a `Generator function` and basically makes it so it can utilize
+`CAF.timeout(time, ''message')`:
+
+```Javascript
+
+let signal = CAF.timeout(20, 'Took too long');
+
+function* processFile(signal) {
+    signal.pr.catch(function f() {
+        // do cleanup
+    });
+
+    yield someOtherFunction();
+}
+
+processFile = CAF(processFile);
+
+```

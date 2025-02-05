@@ -66,11 +66,10 @@ async function main() {
                 console.table(records);
                 return;
             }
-        } else {
-            error("Oops!");
         }
-        return;
     }
+
+    error("Oops!");
 
 }
 

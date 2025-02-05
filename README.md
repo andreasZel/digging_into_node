@@ -297,6 +297,27 @@ it does not require a seperate database program running on the system, it's a st
 envirable where the file is maintain directly by our application, it keeps it in binary format
 in the system. It's built in in browser.
 
+## create a db
+
+we create a db with `var myDB = new sqlite3.Database(DB_PATH);`
+
+## Queries
+
+we exwcute queries using out dB object with:
+
+1. `.get()` : for SELECT
+2. `all()`
+3. `exec()` :
+4. `run()` : for INSERT
+
+### return valuer from queries
+
+some usefull return values are:
+
+1. `result.lastID` form an insert
+2. `result.id` from a get
+3. `result.changes` from a insert
+
 # Built in util.promisify
 
 you can take a function that works with callbacks and transform it to promisese with

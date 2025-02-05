@@ -296,3 +296,8 @@ processFile = CAF(processFile);
 it does not require a seperate database program running on the system, it's a strip down
 envirable where the file is maintain directly by our application, it keeps it in binary format
 in the system. It's built in in browser.
+
+# Built in util.promisify
+
+you can take a function that works with callbacks and transform it to promisese with
+`util.promisify()`, it returns a function with a promise.

@@ -290,3 +290,9 @@ function* processFile(signal) {
 processFile = CAF(processFile);
 
 ```
+
+# SQLite3
+
+it does not require a seperate database program running on the system, it's a strip down
+envirable where the file is maintain directly by our application, it keeps it in binary format
+in the system. It's built in in browser.

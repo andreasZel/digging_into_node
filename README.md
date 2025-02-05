@@ -222,6 +222,13 @@ we can use the built in `zlib`. We create a zlib stream and
 just pipe the readable stream into it:
 
 ```Javascript
-    et gzipStream = zlib.createGzip()
+    let gzipStream = zlib.createGzip()
     outStream = outStream.pipe(gzipStream)
+```
+
+we can do the same with `createGunzip()` to unzip:
+
+```Javascript
+    let gunzipstream = zlib.createGunzip();
+    outStream = outStream.pipe(gunzipstream)
 ```

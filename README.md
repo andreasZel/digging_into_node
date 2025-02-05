@@ -232,3 +232,33 @@ we can do the same with `createGunzip()` to unzip:
     let gunzipstream = zlib.createGunzip();
     outStream = outStream.pipe(gunzipstream)
 ```
+
+# Listening to Stream Events
+
+## end
+
+we can listen to an `end` event to know when a stream is finished being
+processed
+
+we do this as:
+
+```Javascript
+    stream.on('end', callback);
+```
+
+so we could make a wrapper that takes a readable stream as input and returns
+a promise
+
+```Javascript
+function streamComplete() {
+    return new Promise(function c(res) {
+        stream.on('end', res);
+
+    })
+}
+
+// use case
+const stream = stream.pipe(tagetStream)
+
+await streamComplete(stream);
+```

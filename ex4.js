@@ -49,17 +49,34 @@ async function main() {
     };
 
     var initSQL = fs.readFileSync(DB_SQL_PATH, "utf-8");
-    // TODO: initialize the DB structure
-
+    await SQL3.exec(initSQL)
 
     var other = args.other;
     var something = Math.trunc(Math.random() * 1E9);
 
     // ***********
 
-    // TODO: insert values and print all records
+    var otherID = await incertOrLookupOther(other);
+    if (otherID) {
+        let result = await insertSomething(otherID, something)
 
-    error("Oops!");
+        return;
+    } else {
+        error("Oops!");
+    }
+}
+
+async function incertOrLookupOther(other) {
+    var result = await SQL3.get(`SELECT id from Other WHERE data = ?`, other);
+
+    if (result && result.id) {
+        return result;
+    } else {
+        result = await SQL3.run(`INSERT INTO other (data) VALUES(?)`, other);
+        if (result && result.lastID) {
+            return result.lastID;
+        }
+    }
 }
 
 function error(err) {

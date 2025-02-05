@@ -9,7 +9,7 @@ var Transform = require('stream').Transform;
 var zlib = require("zlib");
 
 var args = require("minimist")(process.argv.slice(2), {
-    boolean: ["help", "in", "out", "compress"],
+    boolean: ["help", "in", "out", "compress", "uncompress"],
     string: ["file"]
 });
 
@@ -47,6 +47,11 @@ function processFile(inStream) {
 
     var outStream = inStream;
 
+    if (args.uncompress) {
+        let gunzipstream = zlib.createGunzip();
+        outStream = outStream.pipe(gunzipstream)
+    }
+
     // inbetween stream that makes chunks into upperCase 
     var uppserStream = new Transform({
         transform(chunck, enc, next) {
@@ -83,12 +88,14 @@ function error(msg, includeHelp = false) {
 
 function printHelp() {
     console.log("ex2 usage:");
+    console.log("  ex2 --file={FILENAME}");
     console.log("");
     console.log("--help                      print this help");
     console.log("--file={FILENAME}           process the file");
     console.log("--in, -                     process stdin");
     console.log("--out                       print to stdout");
     console.log("--compress                  gzip the output");
+    console.log("--uncompress                un-gzip the output");
     console.log("");
 }
 

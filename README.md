@@ -371,3 +371,14 @@ http.createServer((req, res) => {
 
 if we also want to handle request as routes for an api, we simply add
 a if statement handling a `req.url`
+
+# Express.js
+
+Express provides a handler for request, ypu create it with
+
+```Javascript
+var app = express();
+```
+
+to define routes we define a `middleware`, a function that
+gets called when an endpoint is called with `app.get('/route', (req, res) => {})`

@@ -322,3 +322,26 @@ some usefull return values are:
 
 you can take a function that works with callbacks and transform it to promisese with
 `util.promisify()`, it returns a function with a promise.
+
+# Create server with http
+
+we create a server using `http` module with:
+
+```Javascript
+var httpserv = http.createServer(async function(req, res){
+
+});
+
+ httpserv.listen(PORT)
+```
+
+`req` and `res` are streams, so we can do manipulation as with regular streams
+
+## response stream methods
+
+1. `response`
+   1.1. `writeHead(statusCode, headers)` : writes into the stream header
+   1.2. `end(response?)` : ends the res stream
+
+2. `request`
+   2.1. `url` : the url of the request

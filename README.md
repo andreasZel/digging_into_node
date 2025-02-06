@@ -345,3 +345,26 @@ var httpserv = http.createServer(async function(req, res){
 
 2. `request`
    2.1. `url` : the url of the request
+
+### Serving static files
+
+we can use the `node-static-alias` package that handles req for us
+
+```Javascript
+
+var fileServer = new staticAlias.Server(WEB_PATH, {
+   cache: 100,
+   serverInfo: "Node Workshop: ex5",
+   alias: [
+       {
+           match: /^\/(?:index\/?)?(?:[?#].*$)?$/,
+           serve: "index.html",
+           force: true,
+       },
+   ],
+});
+
+http.createServer((req, res) => {
+    fileserver.serve(req, res);
+})
+```

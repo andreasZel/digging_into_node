@@ -45,6 +45,21 @@ var fileServer = new staticAlias.Server(WEB_PATH, {
             serve: "index.html",
             force: true,
         },
+        {
+            match: /^\/js\/.+$/,
+            serve: "<% absPath %>",
+            force: true,
+        },
+        {
+            match: /^\/(?:[\w\d]+)(?:[\/?#].*$)?$/,
+            serve: function onMatch(params) {
+                return `${params.basename}.html`;
+            },
+        },
+        {
+            match: /[^]/,
+            serve: "404.html",
+        },
     ],
 });
 

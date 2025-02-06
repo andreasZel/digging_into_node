@@ -5,8 +5,7 @@
 var util = require("util");
 var path = require("path");
 var http = require("http");
-
-// var express = require("express");
+var express = require("express");
 var sqlite3 = require("sqlite3");
 
 var app = express();
@@ -64,29 +63,29 @@ function defineRoutes() {
         res.end(JSON.stringify(records));
     })
 
-    //
-    // Hints:
-    //
-    // {
-    // 	match: /^\/(?:index\/?)?(?:[?#].*$)?$/,
-    // 	serve: "index.html",
-    // 	force: true,
-    // },
-    // {
-    // 	match: /^\/js\/.+$/,
-    // 	serve: "<% absPath %>",
-    // 	force: true,
-    // },
-    // {
-    // 	match: /^\/(?:[\w\d]+)(?:[\/?#].*$)?$/,
-    // 	serve: function onMatch(params) {
-    // 		return `${params.basename}.html`;
-    // 	},
-    // },
-    // {
-    // 	match: /[^]/,
-    // 	serve: "404.html",
-    // },
+    app.use(function (req, res, next) {
+
+        if (/^\/(?:index\/?)?(?:[?#].*$)?$/.test(req.url)) {
+            req.url = "/index.html";
+        } else if (/^\/js\/.+$/.test(req.url)) {
+            next();
+            return;
+        } else if (/^\/(?:[\w\d]+)(?:[\/?#].*$)?$/.test(req.url)) {
+            let [, basename] = req.url.match(/^\/([\w\d]+)(?:[\/?#].*$)?$/);
+            req.url = `${basename}.html`;
+        } else {
+            req.url = '/404.html';
+        }
+
+        next();
+    })
+
+    app.use(express.static(WEB_PATH, {
+        maxAge: 100,
+        setHeaders(res) {
+            res.setHeader("Server", "Node Workshop: ex6");
+        }
+    }));
 }
 
 // *************************

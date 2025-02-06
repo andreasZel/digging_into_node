@@ -59,8 +59,7 @@ async function handleRequest(req, res) {
         res.writeHead(200, { 'Content-Type': 'text/plain' });
         res.end('hello world')
     } else {
-        req.writeHead(404);
-        req.end();
+        res.writeHead(404)
     }
 }
 

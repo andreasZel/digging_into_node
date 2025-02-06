@@ -87,7 +87,7 @@ async function incertOrLookupOther(other) {
 }
 
 async function insertSomething(otherID, something) {
-    result = await SQL3.run(`INSERT INTO Other (otherID, data) VALUES(?, ?)`, otherID, something);
+    const result = await SQL3.run(`INSERT INTO Something (otherID, data) VALUES(?, ?)`, otherID, something);
 
     if (result && result.changes > 0) {
         return true;

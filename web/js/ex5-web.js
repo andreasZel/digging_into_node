@@ -1,8 +1,8 @@
-(function Ex5(){
+(function Ex5() {
 	var btn;
 	var recordsList;
 
-	document.addEventListener("DOMContentLoaded",init,false);
+	document.addEventListener("DOMContentLoaded", init, false);
 
 	// **************
 
@@ -10,7 +10,7 @@
 		btn = document.querySelectorAll("[rel*=js-btn]")[0];
 		recordsList = document.querySelectorAll("[rel*=js-records-list]")[0];
 
-		btn.addEventListener("click",getRecords,false);
+		btn.addEventListener("click", getRecords, false);
 	}
 
 	function renderRecords(records) {
@@ -23,21 +23,26 @@
 				"<>": "table",
 				border: "1",
 				cellPadding: "10",
-				html: function table(){
+				html: function table() {
 					return `<tr><td>Something</td><td>Other</td></tr>
-						${json2html.transform(records,transforms.row)}
+						${json2html.transform(records, transforms.row)}
 					`;
 				},
 			},
 		};
 
-		recordsList.innerHTML = json2html.transform({},transforms.table);
+		recordsList.innerHTML = json2html.transform({}, transforms.table);
 	}
 
 	async function getRecords() {
 		recordsList.innerHTML = "...";
+		const resp = await fetch('/get-records');
 
-		// TODO
+		if (resp && resp.ok) {
+			const records = await resp.json();
+			if (records && records.length > 0)
+				renderRecords(records);
+		}
 	}
 
 })();

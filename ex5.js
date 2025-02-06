@@ -7,13 +7,14 @@ var path = require("path");
 var http = require("http");
 
 var sqlite3 = require("sqlite3");
-// var staticAlias = require("node-static-alias");
+var staticAlias = require("node-static-alias");
 
 
 // ************************************
 
 const DB_PATH = path.join(__dirname, "my.db");
 const WEB_PATH = path.join(__dirname, "web");
+console.log(`Resolved WEB_PATH: ${WEB_PATH}`);
 const HTTP_PORT = 8039;
 
 var delay = util.promisify(setTimeout);
@@ -35,12 +36,17 @@ var SQL3 = {
     exec: util.promisify(myDB.exec.bind(myDB)),
 };
 
-// var fileServer = new staticAlias.Server(WEB_PATH,{
-// 	cache: 100,
-// 	serverInfo: "Node Workshop: ex5",
-// 	alias: [
-// 	],
-// });
+var fileServer = new staticAlias.Server(WEB_PATH, {
+    cache: 100,
+    serverInfo: "Node Workshop: ex5",
+    alias: [
+        {
+            match: /^\/(?:index\/?)?(?:[?#].*$)?$/,
+            serve: "index.html",
+            force: true,
+        },
+    ],
+});
 
 var httpserv = http.createServer(handleRequest);
 
@@ -55,11 +61,18 @@ function main() {
 }
 
 async function handleRequest(req, res) {
-    if (req.url == '/hello') {
-        res.writeHead(200, { 'Content-Type': 'text/plain' });
-        res.end('hello world')
-    } else {
-        res.writeHead(404)
+    try {
+        fileServer.serve(req, res, (err) => {
+            if (err) {
+                console.error("Error serving file:", err);
+                res.writeHead(err.status, { "Content-Type": "text/plain" });
+                res.end(`Error: ${err.message}`);
+            }
+        });
+    } catch (err) {
+        console.error("Unhandled error:", err);
+        res.writeHead(500, { "Content-Type": "text/plain" });
+        res.end("Internal Server Error");
     }
 }
 

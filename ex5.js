@@ -76,18 +76,18 @@ function main() {
 }
 
 async function handleRequest(req, res) {
-    try {
-        fileServer.serve(req, res, (err) => {
-            if (err) {
-                console.error("Error serving file:", err);
-                res.writeHead(err.status, { "Content-Type": "text/plain" });
-                res.end(`Error: ${err.message}`);
-            }
-        });
-    } catch (err) {
-        console.error("Unhandled error:", err);
-        res.writeHead(500, { "Content-Type": "text/plain" });
-        res.end("Internal Server Error");
+
+    if (req.url == "/get-records") {
+        let records = await getAllRecords();
+
+        res.writeHead(200, {
+            'Content-Type': 'application/json',
+            "Cache-Control": "no-cache"
+        })
+
+        res.end(JSON.stringify(records));
+    } else {
+        fileServer.serve(req, res);
     }
 }
 

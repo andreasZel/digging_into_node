@@ -368,3 +368,6 @@ http.createServer((req, res) => {
     fileserver.serve(req, res);
 })
 ```
+
+if we also want to handle request as routes for an api, we simply add
+a if statement handling a `req.url`

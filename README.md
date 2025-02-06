@@ -382,3 +382,26 @@ var app = express();
 
 to define routes we define a `middleware`, a function that
 gets called when an endpoint is called with `app.get('/route', (req, res) => {})`
+
+to serve static files we use `express.static(path_to_files)` and to actually define it
+in express we use `app.use` as a more generic hadler
+
+```Javascript
+app.use(express.static(path_to_files));
+```
+
+## Creating MiddleWare
+
+we might want to rewrite paths, we could use a `app.use()` middleware as before. We
+have to keep in mind that if we do something `asynchronous` we have to call a `next()`
+function, if not express would think we handle the request by ourselfs:
+
+```Javascript
+app.use((req, res, next) => {
+    // do something
+    next();
+});
+```
+
+**The order of the calls counts**, express basically iterates throught a for loop, looking
+for what middlewares we defined, so order is higher first, specifig > general

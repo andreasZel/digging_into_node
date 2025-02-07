@@ -405,3 +405,51 @@ app.use((req, res, next) => {
 
 **The order of the calls counts**, express basically iterates throught a for loop, looking
 for what middlewares we defined, so order is higher first, specifig > general
+
+# Child Processes
+
+`child_process` is a **build in Node Module** We can initiate an object that has standar I/O streams.
+
+we initiate a child process by calling `spawn()`
+
+```Javascript
+var childProc = require("child_process");
+
+var child = childProc.spawn("node", ['filename.js']);
+```
+
+we can read what happen to the child process with a listener, `on("exit")`
+will listen to when a child process will exit, so we can chain them to see
+if they exited successfully:
+
+```Javascript
+const promises = [];
+
+// push each child process into an array
+for (let i = 0; i < MAX_CHILDREN; i++) {
+    promises.push(childProc.spawn("node", ['ex7-child.js']))
+}
+
+//iterate through clild processed returning a promise that
+//resolves with the exit code of the process
+
+promises = promises.map((child) => {
+    return new Promise(resolve) {
+        child.on("exit", function (code) {
+            if (code === 0) {
+                resolve(true);
+            } else {
+                resolve(false);
+            }
+        })
+    }
+})
+
+// wait and check if any exited with code 1 when all are
+// resolved
+const responses = Promise.all(promises);
+
+if (results.filter(Boolean).length == MAX_CHILDREN) {
+    console.log('Succeeded!')
+}
+```

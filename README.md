@@ -453,3 +453,14 @@ if (results.filter(Boolean).length == MAX_CHILDREN) {
     console.log('Succeeded!')
 }
 ```
+
+# Deugging Node
+
+We can debug node from within our `chrome Devtools`!
+The steps to achive that are
+
+1. Open up `chrome://inspect/devices`
+2. Run Node application with `node --inspect`
+
+a Remote target will appear and when clicking on it will provide
+devtools for our node application
